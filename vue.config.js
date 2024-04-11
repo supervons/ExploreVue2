@@ -13,6 +13,14 @@ module.exports = {
         target: "https://dldir1.qq.com", //代理地址，这里设置的地址会代替axios中设置的baseURL
         changeOrigin: true, // 如果接口跨域，需要进行这个参数配置
       },
+      "/files": {
+        target: "https://sgp.proof.ovh.net", //代理地址，这里设置的地址会代替axios中设置的baseURL
+        changeOrigin: true, // 如果接口跨域，需要进行这个参数配置
+      },
+      "/download": {
+        target: "http://vipspeedtest8.wuhan.net.cn:8080", //代理地址，这里设置的地址会代替axios中设置的baseURL
+        changeOrigin: true, // 如果接口跨域，需要进行这个参数配置
+      },
       "/2019WinterFCS": {
         target: "http://updates-http.cdn-apple.com", //代理地址，这里设置的地址会代替axios中设置的baseURL
         changeOrigin: true, // 如果接口跨域，需要进行这个参数配置
