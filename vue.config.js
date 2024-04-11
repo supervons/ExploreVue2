@@ -7,6 +7,19 @@ module.exports = {
   productionSourceMap: false,
   devServer: {
     host: "localhost",
-    port: port
-  }
-}
+    port: port,
+    proxy: {
+      "/qqfile": {
+        target: "https://dldir1.qq.com", //代理地址，这里设置的地址会代替axios中设置的baseURL
+        changeOrigin: true, // 如果接口跨域，需要进行这个参数配置
+      },
+      "/2019WinterFCS": {
+        target: "http://updates-http.cdn-apple.com", //代理地址，这里设置的地址会代替axios中设置的baseURL
+        changeOrigin: true, // 如果接口跨域，需要进行这个参数配置
+        // pathRewrite: {
+        //   "^/api": "", // 这种接口配置出来实际请求 http://XX.XX.XX.XX:8083/api/login
+        // },
+      },
+    },
+  },
+};
