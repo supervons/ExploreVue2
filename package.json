@@ -10,6 +10,7 @@
     "build-vite": "vite build"
   },
   "dependencies": {
+    "@antv/x6": "^2.18.1",
     "core-js": "^3.6.4",
     "streamsaver": "^2.0.6",
     "vite": "^4.1.1",
