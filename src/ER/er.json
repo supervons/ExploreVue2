@@ -31,9 +31,6 @@
             },
             "dataType": {
               "text": "STRING"
-            },
-            "primaryKey": {
-              "xlink:href": "https://antv-x6.gitee.io/icons/icon-144x144.png"
             }
           }
         },
@@ -71,7 +68,7 @@
       "height": 24,
       "position": {
         "x": 250,
-        "y": 210
+        "y": 150
       },
       "ports": [
         {
@@ -168,7 +165,7 @@
       "height": 24,
       "position": {
         "x": 480,
-        "y": 350
+        "y": 150
       },
       "ports": [
         {
@@ -218,7 +215,7 @@
       },
       "target": {
         "cell": "2",
-        "port": "2-3"
+        "port": "2-1"
       },
       "attrs": {
         "line": {
@@ -226,30 +223,37 @@
           "strokeWidth": 2
         }
       },
-      "labels": [{
-        "attrs": { "label": { "text": "1" } },
-        "position": {
-          "distance": 0.25
-        }
-        },
-        {
-          "attrs": { "label": { "text": "N" } },
-          "position": {
-            "distance": 0.75
-          }
-          }],
       "zIndex": 0
     },
     {
       "id": "5",
       "shape": "edge",
       "source": {
-        "cell": "3",
-        "port": "3-1"
+        "cell": "1",
+        "port": "1-2"
       },
       "target": {
         "cell": "2",
-        "port": "2-4"
+        "port": "2-2"
+      },
+      "attrs": {
+        "line": {
+          "stroke": "#A2B1C3",
+          "strokeWidth": 2
+        }
+      },
+      "zIndex": 0
+    },
+    {
+      "id": "6",
+      "shape": "edge",
+      "source": {
+        "cell": "2",
+        "port": "2-1"
+      },
+      "target": {
+        "cell": "3",
+        "port": "3-1"
       },
       "attrs": {
         "line": {

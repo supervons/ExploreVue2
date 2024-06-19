@@ -1,84 +1,15 @@
 <template>
   <div class="antv-x6">
-    <div class="app-stencil" id="stencilContainer" ref="stencilContainer"></div>
     <div class="app-content" ref="containerRef"></div>
-    <div class="operating">
-      <el-tooltip class="item" effect="light" content="撤销" placement="bottom">
-        <i
-          class="el-icon-refresh-left"
-          :class="{ opacity: !canUndo }"
-          @click="undoFn"
-        ></i>
-      </el-tooltip>
-      <el-tooltip class="item" effect="light" content="重做" placement="bottom">
-        <i
-          class="el-icon-refresh-right"
-          :class="{ opacity: !canRedo }"
-          @click="redoFn"
-        ></i>
-      </el-tooltip>
-      <el-tooltip class="item" effect="light" content="放大" placement="bottom">
-        <i class="el-icon-zoom-in" @click="zoomInFn"></i>
-      </el-tooltip>
-      <el-tooltip class="item" effect="light" content="缩小" placement="bottom">
-        <i
-          class="el-icon-zoom-out"
-          :class="{ opacity: !canZoomOut }"
-          @click="zoomOutFn"
-        ></i>
-      </el-tooltip>
-      <el-tooltip class="item" effect="light" content="重置" placement="bottom">
-        <i class="el-icon-full-screen" @click="resetFn"></i>
-      </el-tooltip>
-      <el-tooltip class="item" effect="light" content="清除" placement="bottom">
-        <i class="el-icon-delete" @click="clearFn"></i>
-      </el-tooltip>
-      <span id="sp123">123</span>
-      <el-popover
-        placement="top-start"
-        title="标题"
-        width="200"
-        trigger="hover"
-        content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。"
-      >
-        <el-button slot="reference">hover 激活</el-button>
-      </el-popover>
-    </div>
-    <el-tooltip content="xxx" value popper-class="tooltip-widget">
-      <span style="position: relative; left: -1000px; top: -1000px" />
-    </el-tooltip>
   </div>
 </template>
 
 <script>
 import { Graph, Shape, FunctionExt } from "@antv/x6";
 import ErJson from "./er.json";
-import { cloneDeep, random } from "./util";
 
 const LINE_HEIGHT = 24;
 const NODE_WIDTH = 150;
-const defaultTableStyle = {
-  id: "",
-  label: "",
-  ports: [],
-  height: 24,
-  width: 150,
-  shape: "er-rect",
-  position: {
-    x: "",
-    y: "",
-  },
-};
-
-const defalitColumnsStyle = {
-  id: "",
-  group: "column",
-  attrs: {
-    columnCode: { text: "" },
-    dataType: { text: "" },
-    primaryKey: {},
-  },
-};
 export default {
   name: "er",
   data() {
@@ -94,7 +25,6 @@ export default {
   },
   mounted() {
     this.init();
-    this.addTable();
   },
   methods: {
     init() {
@@ -331,22 +261,34 @@ export default {
           this.showRight = false;
         }
       });
-      // 节点鼠标移入
-      this.graph.on(
-        "node:mouseenter",
-        FunctionExt.debounce(({ node }) => {
-          // 添加删除
-          node.addTools({
-            name: "button-remove",
-            args: {
-              x: 0,
-              y: 0,
-              offset: { x: 140, y: 10 },
-            },
-          });
-        }),
-        500
-      );
+      this.graph.on("node:collapse", ({ node }) => {
+        node.toggleCollapse();
+        const collapsed = node.isCollapsed();
+        const cells = node.getDescendants();
+        cells.forEach((node) => {
+          if (collapsed) {
+            node.hide();
+          } else {
+            node.show();
+          }
+        });
+      });
+      // 节点鼠标移入 TODO 移入后删除
+      // this.graph.on(
+      //   "node:mouseenter",
+      //   FunctionExt.debounce(({ node }) => {
+      //     // 添加删除
+      //     node.addTools({
+      //       name: "button-remove",
+      //       args: {
+      //         x: 0,
+      //         y: 0,
+      //         offset: { x: 140, y: 10 },
+      //       },
+      //     });
+      //   }),
+      //   500
+      // );
       this.graph.on("node:port-contextmenu", ({ e }) => {
         console.log(
           "ports",
@@ -354,19 +296,19 @@ export default {
           e.currentTarget.parentElement.getAttribute("port")
         );
       });
-      // 连接线鼠标移入
-      this.graph.on("edge:mouseenter", ({ edge }) => {
-        edge.addTools([
-          "source-arrowhead",
-          "target-arrowhead",
-          {
-            name: "button-remove",
-            args: {
-              distance: "50%",
-            },
-          },
-        ]);
-      });
+      // 连接线鼠标移入 TODO 移入后删除
+      // this.graph.on("edge:mouseenter", ({ edge }) => {
+      //   edge.addTools([
+      //     "source-arrowhead",
+      //     "target-arrowhead",
+      //     {
+      //       name: "button-remove",
+      //       args: {
+      //         distance: "50%",
+      //       },
+      //     },
+      //   ]);
+      // });
       // 节点鼠标移出
       this.graph.on("node:mouseleave", ({ node }) => {
         // 移除删除
@@ -381,82 +323,6 @@ export default {
           // 对新创建的边进行插入数据库等持久化操作
         }
       });
-    },
-    addTable() {
-      const nodes = [];
-      for (let index = 0; index < 1; index++) {
-        const table = { id: `t${index}`, label: `test${index}` };
-        const node = Object.assign(cloneDeep(defaultTableStyle), table);
-        // console.log('for-',index, node)
-        node.position.x = random(0, index * 10);
-        node.position.y = random(0, index * 10);
-
-        const columns = [
-          {
-            id: `t${index}` + "c1",
-            columnCode: `t${index}` + "id",
-            dataType: "int",
-            primaryKey: true,
-          },
-          {
-            id: `t${index}` + "c2",
-            columnCode: `t${index}` + "name",
-            dataType: "varchar",
-            primaryKey: false,
-          },
-        ];
-
-        columns.forEach((e) => {
-          const item = cloneDeep(defalitColumnsStyle);
-          item.id = e.id;
-          item.attrs.columnCode.text = e.columnCode;
-          item.attrs.dataType.text = e.dataType;
-          item.attrs.primaryKey["xlink:href"] = e.primaryKey
-            ? "https://antv-x6.gitee.io/icons/icon-144x144.png"
-            : "";
-          node.ports.push(item);
-        });
-        nodes.push(node);
-      }
-      console.log("nodes", nodes);
-
-      const graph = this.graph;
-      graph.addNodes(nodes);
-    },
-    // 放大
-    zoomInFn() {
-      this.graph.zoom(0.1);
-      this.canZoomOut = true;
-    },
-    // 缩小
-    zoomOutFn() {
-      if (!this.canZoomOut) return;
-      const Num = Number(this.graph.zoom().toFixed(1));
-
-      if (Num > 0.1) {
-        this.graph.zoom(-0.1);
-      } else {
-        this.canZoomOut = false;
-      }
-    },
-    // 重做
-    redoFn() {
-      if (!this.canRedo) return;
-      this.graph.history.redo();
-    },
-    // 撤消
-    undoFn() {
-      if (!this.canUndo) return;
-      this.graph.history.undo();
-    },
-    // 重置
-    resetFn() {
-      this.graph.centerContent();
-      this.graph.zoom(0);
-    },
-    // 清除
-    clearFn() {
-      this.graph.clearCells();
     },
   },
 };
